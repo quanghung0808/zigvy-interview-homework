@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -8,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
       process.env.MONGO_URI || 'mongodb://localhost/zigtask',
     ),
     AuthModule,
+    TasksModule,
   ],
 })
 export class AppModule {}
