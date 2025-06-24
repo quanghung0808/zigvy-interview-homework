@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { TASK_STATUSES } from '../enum/task-status.enum';
+import { TASK_STATUSES, TaskStatus } from '../enum/task-status.enum';
 
 export type TaskDocument = Task & Document;
 
@@ -20,7 +20,7 @@ export class Task {
     enum: TASK_STATUSES,
     default: TASK_STATUSES[0],
   })
-  status: string;
+  status: TaskStatus;
 
   @Prop({ required: true })
   userId: string;
