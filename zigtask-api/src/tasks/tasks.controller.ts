@@ -7,6 +7,7 @@ import {
   Request,
   Get,
   Query,
+  Param,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -54,5 +55,13 @@ export class TasksController {
       from,
       to,
     });
+  }
+
+  @Get(':id')
+  async findOne(
+    @Request() req: { user: { sub: string } },
+    @Param('id') id: string,
+  ): Promise<TaskResponseDto> {
+    return this.tasksService.findById(id, req.user.sub);
   }
 }

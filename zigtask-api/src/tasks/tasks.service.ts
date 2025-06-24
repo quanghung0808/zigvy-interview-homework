@@ -1,4 +1,9 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { Task, TaskDocument } from './schemas/task.schema';
@@ -46,5 +51,12 @@ export class TasksService {
     }
     const tasks = await this.taskModel.find(query);
     return tasks.map(toTaskResponseDto);
+  }
+
+  async findById(id: string, userId: string) {
+    const task = await this.taskModel.findById(id);
+    if (!task) throw new NotFoundException('Task not found');
+    if (task.userId !== userId) throw new ForbiddenException('Access denied');
+    return toTaskResponseDto(task);
   }
 }
