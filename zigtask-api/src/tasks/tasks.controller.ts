@@ -1,11 +1,20 @@
 // src/tasks/tasks.controller.ts
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Task } from './schemas/task.schema';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
+import { TaskStatus } from './enum/task-status.enum';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -25,5 +34,25 @@ export class TasksController {
       userId: req.user.sub,
     };
     return this.tasksService.create(data);
+  }
+
+  @Get()
+  @ApiQuery({ name: 'status', required: false })
+  @ApiQuery({ name: 'title', required: false })
+  @ApiQuery({ name: 'from', required: false })
+  @ApiQuery({ name: 'to', required: false })
+  async findAll(
+    @Request() req: { user: { sub: string } },
+    @Query('status') status?: TaskStatus,
+    @Query('title') title?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ): Promise<TaskResponseDto[]> {
+    return this.tasksService.searchTasks(req.user.sub, {
+      status,
+      title,
+      from,
+      to,
+    });
   }
 }
