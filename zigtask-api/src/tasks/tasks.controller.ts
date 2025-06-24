@@ -8,6 +8,7 @@ import {
   Get,
   Query,
   Param,
+  Put,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -16,6 +17,7 @@ import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskResponseDto } from './dto/task-response.dto';
 import { TaskStatus } from './enum/task-status.enum';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -63,5 +65,17 @@ export class TasksController {
     @Param('id') id: string,
   ): Promise<TaskResponseDto> {
     return this.tasksService.findById(id, req.user.sub);
+  }
+
+  @Put(':id')
+  async update(
+    @Request() req: { user: { sub: string } },
+    @Param('id') id: string,
+    @Body() dto: UpdateTaskDto,
+  ): Promise<any> {
+    const { dueDate, ...rest } = dto;
+    const data: Partial<Task> = { ...rest };
+    if (dueDate) data.dueDate = new Date(dueDate);
+    return this.tasksService.update(id, req.user.sub, data);
   }
 }

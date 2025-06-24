@@ -59,4 +59,15 @@ export class TasksService {
     if (task.userId !== userId) throw new ForbiddenException('Access denied');
     return toTaskResponseDto(task);
   }
+
+  async update(id: string, userId: string, data: Partial<Task>) {
+    const task = await this.taskModel.findById(id);
+    if (!task) throw new NotFoundException('Task not found');
+    Object.assign(task, data);
+    if (data.dueDate && typeof data.dueDate === 'string') {
+      task.dueDate = new Date(data.dueDate);
+    }
+    const updated = await task.save();
+    return toTaskResponseDto(updated);
+  }
 }
