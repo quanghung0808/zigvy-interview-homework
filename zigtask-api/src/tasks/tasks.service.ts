@@ -9,10 +9,14 @@ import { FilterQuery, Model } from 'mongoose';
 import { Task, TaskDocument } from './schemas/task.schema';
 import { toTaskResponseDto } from './task.mapper';
 import { FilterTasksDto } from './dto/filter-tasks.dto';
+import { TaskGateway } from './task/task.gateway';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
+  constructor(
+    private readonly taskGateway: TaskGateway,
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+  ) {}
 
   async create(data: Partial<Task> & { userId: string }) {
     const existing = await this.taskModel.findOne({ title: data.title });
@@ -22,6 +26,7 @@ export class TasksService {
     }
 
     const task = await this.taskModel.create(data);
+    this.taskGateway.broadcastTaskUpdate(task);
     return toTaskResponseDto(task);
   }
 
@@ -68,6 +73,7 @@ export class TasksService {
       task.dueDate = new Date(data.dueDate);
     }
     const updated = await task.save();
+    this.taskGateway.broadcastTaskUpdate(task);
     return toTaskResponseDto(updated);
   }
 
@@ -75,6 +81,7 @@ export class TasksService {
     const task = await this.taskModel.findById(id, userId);
     if (!task) throw new NotFoundException('Task not found');
     await task.deleteOne();
+    this.taskGateway.broadcastTaskDelete(String(task._id));
     return { deleted: true };
   }
 }
