@@ -9,6 +9,7 @@ import {
   Query,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -77,5 +78,13 @@ export class TasksController {
     const data: Partial<Task> = { ...rest };
     if (dueDate) data.dueDate = new Date(dueDate);
     return this.tasksService.update(id, req.user.sub, data);
+  }
+
+  @Delete(':id')
+  async remove(
+    @Request() req: { user: { sub: string } },
+    @Param('id') id: string,
+  ): Promise<any> {
+    return this.tasksService.delete(id, req.user.sub);
   }
 }

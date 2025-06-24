@@ -70,4 +70,11 @@ export class TasksService {
     const updated = await task.save();
     return toTaskResponseDto(updated);
   }
+
+  async delete(id: string, userId: string) {
+    const task = await this.taskModel.findById(id, userId);
+    if (!task) throw new NotFoundException('Task not found');
+    await task.deleteOne();
+    return { deleted: true };
+  }
 }
