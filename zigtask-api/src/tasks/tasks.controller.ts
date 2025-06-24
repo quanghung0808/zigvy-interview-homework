@@ -72,7 +72,7 @@ export class TasksController {
     @Request() req: { user: { sub: string } },
     @Param('id') id: string,
     @Body() dto: UpdateTaskDto,
-  ): Promise<any> {
+  ): Promise<UpdateTaskDto> {
     const { dueDate, ...rest } = dto;
     const data: Partial<Task> = { ...rest };
     if (dueDate) data.dueDate = new Date(dueDate);
