@@ -17,6 +17,7 @@ import { useTasksStore } from "../store/tasks";
 import { Task, TaskStatus } from "../types/task";
 import { DropResult } from "react-beautiful-dnd";
 import useDebounce from "../hooks/useDebounce";
+import { io, Socket } from "socket.io-client";
 
 const Dashboard: React.FC = () => {
   const {
@@ -27,6 +28,7 @@ const Dashboard: React.FC = () => {
     reorderTask,
     setFilters,
     filters,
+    removeTask,
   } = useTasksStore();
   const [formOpen, setFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -41,6 +43,27 @@ const Dashboard: React.FC = () => {
     setFilters({ title: debouncedSearch, from: startDate, to: endDate });
     fetchAll({ title: debouncedSearch, from: startDate, to: endDate });
   }, [debouncedSearch, startDate, endDate, setFilters, fetchAll]);
+
+  useEffect(() => {
+    // Connect to the backend WebSocket server
+    const socket: Socket = io(
+      process.env.REACT_APP_API_URL || "http://localhost:3000"
+    );
+
+    socket.on("taskUpdated", (task: Task) => {
+      editTask(task.id, task);
+    });
+    socket.on("taskCreated", (task: Task) => {
+      addTask(task);
+    });
+    socket.on("taskDeleted", (taskId: string) => {
+      removeTask(taskId);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [addTask, editTask, removeTask]);
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
