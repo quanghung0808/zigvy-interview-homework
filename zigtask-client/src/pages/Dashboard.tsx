@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   useTheme,
   Grid,
+  Snackbar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import TaskBoard from "../components/TaskBoard";
@@ -38,6 +39,8 @@ const Dashboard: React.FC = () => {
   const debouncedSearch = useDebounce(search, 500);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   useEffect(() => {
     setFilters({ title: debouncedSearch, from: startDate, to: endDate });
@@ -58,6 +61,11 @@ const Dashboard: React.FC = () => {
     });
     socket.on("taskDeleted", (taskId: string) => {
       removeTask(taskId);
+    });
+
+    socket.on("taskDueSoon", (data: { id: string; title: string; dueDate: string; userId: string }) => {
+      setSnackbarMsg(`Task due soon: ${data.title} at ${new Date(data.dueDate).toLocaleString()}`);
+      setSnackbarOpen(true);
     });
 
     return () => {
@@ -173,6 +181,13 @@ const Dashboard: React.FC = () => {
         }}
         onSubmit={handleFormSubmit}
         initialValues={editingTask || undefined}
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMsg}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </Box>
   );
