@@ -1,46 +1,47 @@
-# Getting Started with Create React App
+# ZigTask Web Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Overview
+ZigTask Web Client is a modern, responsive task management frontend built with React and TypeScript. It allows users to sign up, sign in, and manage their tasks with real-time updates, drag-and-drop task board, search/filter, and dark mode support. The app communicates with the ZigTask API for all data operations.
 
-## Available Scripts
+## Setup & Run Instructions (Web)
 
-In the project directory, you can run:
+### Prerequisites
+- Node.js v20+
 
-### `npm start`
+### 1. Install dependencies
+```bash
+npm install
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 2. Configure environment
+Copy the example environment file and update the API URL if needed:
+```bash
+cp .env-example .env
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 3. Start the development server
+```bash
+npm start
+```
+- The app runs at http://localhost:3001 (or as shown in terminal)
 
-### `npm test`
+### 4. Run tests
+```bash
+npm test
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 5. Lint & Build
+```bash
+npm run lint
+npm run build
+```
 
-### `npm run build`
+## Decisions & Trade-offs
+- **State Management:** Chose Zustand for its minimal API, ease of use, and scalability for small-to-medium apps. Zustand provides a simple, boilerplate-free alternative to Redux, making state logic easy to maintain and test.
+- **UI Library:** Selected Material UI for its comprehensive component set, accessibility, and rapid development capabilities. It ensures a consistent, modern look and feel with minimal custom CSS.
+- **Real-time Updates:** Integrated Socket.IO to enable live task updates and board synchronization, providing a responsive user experience. This was preferred over polling for efficiency and immediacy.
+- **Dark Mode:** Implemented a built-in toggle using React context and Material UI theming, allowing users to switch between light and dark modes for better accessibility and comfort.
+- **Testing:** Used React Testing Library for component and unit tests, focusing on user-centric testing and reliability.
+- **Routing:** Used React Router for client-side navigation, enabling a multi-page feel in a single-page app.
+- **Trade-offs:** Opted for Zustand over Redux Toolkit for simplicity, at the cost of some advanced middleware and devtools. Chose Material UI for speed, though it adds bundle size compared to lighter alternatives like Chakra or Tailwind.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
