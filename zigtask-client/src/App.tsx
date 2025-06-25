@@ -1,8 +1,15 @@
-import React from "react";
-import "./App.css";
+import { AppBar, Toolbar, Typography } from "@mui/material";
+import DarkModeToggle from "./components/DarkModeToggle";
 
-function App() {
-  return <div>React app</div>;
-}
+const App = () => (
+  <AppBar position="static">
+    <Toolbar>
+      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        ZigTask
+      </Typography>
+      <DarkModeToggle />
+    </Toolbar>
+  </AppBar>
+);
 
 export default App;
