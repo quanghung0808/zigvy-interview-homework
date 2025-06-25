@@ -20,3 +20,10 @@ export interface UpdateTaskRequest {
   dueDate?: string;
   status?: TaskStatus;
 }
+
+export interface TaskFilters {
+  title?: string;
+  from?: string;
+  to?: string;
+  status?: string;
+}
